@@ -1,0 +1,12 @@
+appId: com.example.app
+productName: Safety Cam
+directories:
+  output: dist
+files:
+  - "**/*"
+asar: true
+extraMetadata:
+  main: electron-main.js
+linux:
+  target: deb
+  

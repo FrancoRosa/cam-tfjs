@@ -1,57 +1,55 @@
-// Modules to control application life and create native browser window
-const { app, BrowserWindow } = require("electron");
-const path = require("path");
+const { app, BrowserWindow, Menu } = require("electron");
 const express = require("express");
-const cors = require("cors");
-const localServerApp = express();
-const PORT = 8088;
-const startLocalServer = (done) => {
-  localServerApp.use(express.json({ limit: "100mb" }));
-  localServerApp.use(cors());
-  localServerApp.use(express.static("./build/"));
-  localServerApp.listen(PORT, async () => {
-    console.log("Server Started on PORT ", PORT);
-    done();
-  });
-};
+const path = require("path");
+
+// Create an Express app
+const expressApp = express();
+const port = 8088;
+// Serve static files from the "public" directory
+expressApp.use(express.static(path.join(__dirname, "build")));
+
+// Serve the static HTML file
+expressApp.get("/", (req, res) => {
+  const dir = path.join(__dirname, "build/index.html");
+  console.log(dir);
+  res.sendFile(dir);
+});
+
+// Create the main Electron window
+let mainWindow;
 
 function createWindow() {
-  // Create the browser window.
-  const mainWindow = new BrowserWindow({
-    width: 800,
-    height: 600,
-    webPreferences: {
-      preload: path.join(__dirname, "preload.js"),
-    },
+  mainWindow = new BrowserWindow({
+    width: 640,
+    height: 480,
   });
 
-  // and load the index.html of the app.
-  //   mainWindow.loadFile('index.html')
-  mainWindow.loadURL("http://localhost:" + PORT);
+  mainWindow.loadURL(`http://localhost:${port}`); // Load the Express app
 
-  // Open the DevTools.
-  // mainWindow.webContents.openDevTools()
+  Menu.setApplicationMenu(null);
+  // Open the DevTools if needed
+  // mainWindow.webContents.openDevTools();
+
+  mainWindow.on("closed", function () {
+    mainWindow = null;
+  });
 }
 
-// This method will be called when Electron has finished
-// initialization and is ready to create browser windows.
-// Some APIs can only be used after this event occurs.
-app.whenReady().then(() => {
-  startLocalServer(createWindow);
-
-  app.on("activate", function () {
-    // On macOS it's common to re-create a window in the app when the
-    // dock icon is clicked and there are no other windows open.
-    if (BrowserWindow.getAllWindows().length === 0) createWindow();
+app.on("ready", () => {
+  createWindow();
+  expressApp.listen(port, () => {
+    console.log(`Server is running on port ${8088}`);
   });
 });
 
-// Quit when all windows are closed, except on macOS. There, it's common
-// for applications and their menu bar to stay active until the user quits
-// explicitly with Cmd + Q.
 app.on("window-all-closed", function () {
-  if (process.platform !== "darwin") app.quit();
+  if (process.platform !== "darwin") {
+    app.quit();
+  }
 });
 
-// In this file you can include the rest of your app's specific main process
-// code. You can also put them in separate files and require them here.
+app.on("activate", function () {
+  if (mainWindow === null) {
+    createWindow();
+  }
+});
