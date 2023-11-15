@@ -5,6 +5,21 @@ import * as tf from "@tensorflow/tfjs";
 import * as cocossd from "@tensorflow-models/coco-ssd";
 import Webcam from "react-webcam";
 import { drawRect, getDistance } from "../js/rectangles";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCrosshairs } from "@fortawesome/free-solid-svg-icons";
+
+const buttonStyle = {
+  cursor: "pointer",
+  position: "absolute",
+  color: "cyan",
+  fontSize: "1.5em",
+  height: "1.5em",
+  width: "1.5em",
+  border: "solid 2px cyan",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+};
 
 const Cam = ({ id = 1 }) => {
   const [coco, setCoco] = useState(false);
@@ -18,6 +33,7 @@ const Cam = ({ id = 1 }) => {
   const [distance, setDistance] = useState();
   const webcamRef = useRef();
   const canvasRef = useRef();
+  const [lines, setLines] = useState(true);
 
   const style = {
     position: "absolute",
@@ -147,6 +163,17 @@ const Cam = ({ id = 1 }) => {
 
         <canvas ref={canvasRef} style={{ position: "absolute", top: 0 }} />
 
+        <div
+          style={{
+            top: resolution.height / 2 - 18,
+            right: 0,
+            ...buttonStyle,
+          }}
+          onClick={() => setLines((s) => !s)}
+        >
+          <FontAwesomeIcon icon={faCrosshairs} />
+        </div>
+
         {distance && (
           <p
             style={{
@@ -157,7 +184,7 @@ const Cam = ({ id = 1 }) => {
               backgroundColor: "transparent",
               fontFamily: "monospace",
               zIndex: 30,
-              color: distance < 2 ? "orange" : "lime",
+              color: distance < 2 ? "orange" : "cyan",
               fontSize: "2em",
               fontWeight: "bolder",
               WebkitTextStroke: "1px white",
@@ -165,6 +192,32 @@ const Cam = ({ id = 1 }) => {
           >
             Distance: {distance}
           </p>
+        )}
+        {lines && (
+          <>
+            <div
+              style={{
+                position: "absolute",
+                bottom: resolution.height / 2,
+                width: resolution.width - 36,
+                height: 1,
+                backgroundColor: "cyan",
+                fontFamily: "monospace",
+                zIndex: 30,
+              }}
+            ></div>
+            <div
+              style={{
+                position: "absolute",
+                left: resolution.width / 2,
+                width: 1,
+                height: resolution.height,
+                backgroundColor: "cyan",
+                fontFamily: "monospace",
+                zIndex: 30,
+              }}
+            ></div>
+          </>
         )}
       </div>
     </>

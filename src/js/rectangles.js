@@ -1,3 +1,33 @@
+const renamer = (text) => {
+  switch (text) {
+    case "bowl":
+      return "tube"
+    case "cup":
+      return "tube"
+    case "bottle":
+      return "tube"
+    case "frisbee":
+      return "tube"
+    default:
+      return text
+  }
+}
+
+const reColor = (text) => {
+  switch (text) {
+    case "bowl":
+      return "#FF0000"
+    case "cup":
+      return "#FF0000"
+    case "bottle":
+      return "#FF0000"
+    case "frisbee":
+      return "#FF0000"
+    default:
+      return "#32CD32"
+  }
+}
+
 export const drawRect = (detections, ctx) => {
   // Loop through each prediction
   detections.forEach((prediction) => {
@@ -11,14 +41,13 @@ export const drawRect = (detections, ctx) => {
     // Set styling
     // const color = Math.floor(Math.random() * 16777215).toString(16);
     const acc = Math.round(score * 100);
-    const lime = "#32CD32";
-    ctx.strokeStyle = lime;
-    ctx.font = "18px Monospace";
+    ctx.strokeStyle = reColor(text);
+    ctx.font = "2em Monospace";
 
     // Draw rectangles and text
     ctx.beginPath();
-    ctx.fillStyle = lime;
-    ctx.fillText(`${text} ${acc}%`, x + 5, y + 18);
+    ctx.fillStyle = reColor(text);
+    ctx.fillText(`${renamer(text)} ${acc}% ${width.toFixed(1)}`, x + 5, y + 24);
     ctx.lineWidth = 5;
     ctx.rect(x, y, width, height);
     ctx.stroke();
