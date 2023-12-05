@@ -1,10 +1,10 @@
 import "./App.css";
-import Cam from "./components/Cam";
+import CamLite from "./components/CamLite";
 
 function App() {
   return (
     <div className="App">
-      <Cam />
+      <CamLite />
     </div>
   );
 }

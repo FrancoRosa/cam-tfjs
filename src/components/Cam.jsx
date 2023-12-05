@@ -111,7 +111,7 @@ const Cam = ({ id = 1 }) => {
     if (coco) {
       detectInterval = setInterval(() => {
         detect(coco);
-      }, 300);
+      }, 250);
     } else {
       clearInterval(detectInterval);
     }
